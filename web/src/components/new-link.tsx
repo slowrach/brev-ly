@@ -1,6 +1,11 @@
+import { useState } from "react";
+import { Button } from "./ui/button";
+
 export function NewLink() {
+  const [loading, setLoading] = useState(false)
+
   return (
-    <div className="bg-gray-100 p-6 rounded-md w-90">
+    <div className="bg-gray-100 p-6 rounded-md lg:w-90 h-full">
       <h2 className="text-black text-xl font-bold mb-6">Novo link</h2>
 
       <div className="flex flex-col gap-4">
@@ -26,9 +31,9 @@ export function NewLink() {
         </div>
       </div>
 
-      <button className="w-full py-3 font-medium text-center text-white bg-[#2C46B1] rounded-md mt-6">
-        Salvar link
-      </button>
+      <Button variant="blue" disabled={loading ? true : false} >
+        {loading ? "Salvando..." : "Salvar link"} 
+      </Button>
     </div>
   );
 }
