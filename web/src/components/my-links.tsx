@@ -11,7 +11,7 @@ export function MyLinks() {
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="bg-gray-100 p-6 rounded-md lg:w-145 h-full relative overflow-hidden">
+    <div className="bg-gray-100 p-6 rounded-md lg:w-145 relative overflow-hidden">
       {loading && (
         <motion.div
           className="absolute top-0 left-0 bg-theme-blue h-1 w-[25%]"
@@ -33,7 +33,15 @@ export function MyLinks() {
       </div>
       {items ? (
         <ScrollArea.Root type="always">
-          <ScrollArea.Viewport className="h-70 lg:h-112">
+          <ScrollArea.Viewport className="h-87 lg:h-130">
+            <Item />
+            <Item />
+            <Item />
+            <Item />
+            <Item />
+            <Item />
+            <Item />
+            <Item />
             <Item />
             <Item />
             <Item />
