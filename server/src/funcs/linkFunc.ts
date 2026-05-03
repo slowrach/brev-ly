@@ -1,8 +1,17 @@
 import z from "zod";
-import { Readable } from "node:stream";
 
 const linkRequest = z.object({
-   name: z.string(),
-   contentStream: z.instanceof(Readable),
+   originalLink: z.url(),
+   shortLink: z.string(),
 })
+
+export type LinkRequest = z.input<typeof linkRequest>
+
+export async function uploadLinks(request: LinkRequest) {
+   const { originalLink, shortLink } = linkRequest.parse(request)
+
+   return { originalLink, shortLink }
+}
+
+
 

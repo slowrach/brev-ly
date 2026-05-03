@@ -6,7 +6,7 @@ export function Item() {
   return (
     <div className="flex items-center justify-between w-full gap-3 py-3 border-t border-t-gray-200">
       <div className="flex flex-col gap-1 w-39">
-        <span className="text-theme-blue font-medium text-sm truncate lg:overflow-visible">projeto_final.pdf</span>
+        <span className="text-theme-blue font-medium text-sm truncate lg:overflow-visible">www.meu-projeto.com.br</span>
         <span className="text-gray-400 text-xs truncate lg:overflow-visible">brev.ly/proj2026</span>
       </div>
 
