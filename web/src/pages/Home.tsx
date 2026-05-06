@@ -19,18 +19,22 @@ export function Home() {
         </p>
         <p className="text-center">
           Não foi redirecionado?{" "}
-          <a className="text-theme-blue underline" href="#">
+          <a className="text-theme-blue underline" href="/">
             Acesse aqui
           </a>
         </p>
       </div>
     </div>
   ) : (
-    <div className="flex flex-col">
-      <img src={logo} alt="logo" className="h-6 mb-6 lg:mb-8 lg:self-start" />
-      <div className="flex flex-col gap-3 lg:flex-row h-full">
-        <NewLink />
-        <MyLinks />
+    <div className="flex my-8 lg:my-22  justify-center">
+      <div className="flex flex-col">
+        <img src={logo} alt="logo" className="h-6 mb-6 lg:mb-8 lg:self-start" />
+        <div>
+          <div className="flex flex-col gap-3 lg:flex-row">
+            <NewLink />
+            <MyLinks />
+          </div>
+        </div>
       </div>
     </div>
   );

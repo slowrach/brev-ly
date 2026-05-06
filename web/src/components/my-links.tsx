@@ -1,17 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import download from "../assets/download.svg";
 import link from "../assets/link.svg";
-import { Item } from "./item";
+import { Item, type Upload } from "./item";
 import { Button } from "./ui/button";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { motion } from "motion/react";
+import { api } from "../http/api";
 
 export function MyLinks() {
-  const [items, setItems] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [uploads, setUploads] = useState<Upload[]>([]);
+
+  useEffect(() => {
+    async function returns() {
+      setLoading(true);
+
+      try {
+        const data = await api.get("/");
+
+        setUploads(data.data);
+      } catch (error) {
+        return alert(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    returns();
+  }, []);
 
   return (
-    <div className="bg-gray-100 p-6 rounded-md lg:w-145 relative overflow-hidden">
+    <div className="bg-gray-100 p-6 rounded-md lg:w-145 relative overflow-hidden h-full">
       {loading && (
         <motion.div
           className="absolute top-0 left-0 bg-theme-blue h-1 w-[25%]"
@@ -31,25 +50,16 @@ export function MyLinks() {
           <span className="text-xs font-bold">Baixar CSV</span>
         </Button>
       </div>
-      {items ? (
+      {uploads.length > 0 ? (
         <ScrollArea.Root type="always">
-          <ScrollArea.Viewport className="h-87 lg:h-130">
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
-            <Item />
+          <ScrollArea.Viewport className="max-h-84 lg:max-h-130">
+            {uploads.map((item, index) => (
+              <Item
+                key={index}
+                originalLink={item.originalLink}
+                shortLink={item.shortLink}
+              />
+            ))}
           </ScrollArea.Viewport>
           <ScrollArea.Scrollbar
             className="flex select-none transition-colors duration-160 ease-out data-[orientation=horizontal]:h-2.5 data-[orientation=vertical]:w-2.5 data-[orientation=horizontal]:flex-col translate-x-3"
@@ -59,7 +69,7 @@ export function MyLinks() {
           </ScrollArea.Scrollbar>
         </ScrollArea.Root>
       ) : (
-        <div className="flex flex-col justify-center items-center gap-3 border-t border-t-gray-300 w-full h-full pt-8 pb-10">
+        <div className="flex flex-col justify-center items-center gap-3 border-t border-t-gray-300 w-full p-8">
           <img src={link} alt="ícone de link" />
           <span className="text-xxs text-gray-500 uppercase">
             Ainda não existem links cadastrados

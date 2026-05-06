@@ -8,7 +8,6 @@
 body {
   height: 100%;
   display: grid;
-  padding: 32px 0;
   place-content: center;
   background: var(--color-gray-200);
 }

@@ -10,7 +10,7 @@ const variants = {
   blue: "bg-theme-blue text-white py-3 font-medium mt-6 w-full",
 };
 
-export function Button({ disabled, variant, children, className }: Props) {
+export function Button({ disabled, variant, children, className, ...rest }: Props) {
   return (
     <button
       disabled={disabled}
@@ -19,6 +19,7 @@ export function Button({ disabled, variant, children, className }: Props) {
         variants[variant],
         className,
       ])}
+      {...rest}
     >
       {children}
     </button>
