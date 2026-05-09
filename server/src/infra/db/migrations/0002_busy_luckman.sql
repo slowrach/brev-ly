@@ -1,0 +1,1 @@
+ALTER TABLE "uploads" ADD COLUMN "access_number" integer DEFAULT 0 NOT NULL;

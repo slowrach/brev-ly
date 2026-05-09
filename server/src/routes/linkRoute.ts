@@ -2,6 +2,7 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { uploadLinks } from "../funcs/uploadLinks";
 import { listLinks } from "../funcs/listLinks";
+import { deleteLinks } from "../funcs/deleteLinks";
 
 export const linkRoute: FastifyPluginAsyncZod = async (app) => {
   app.post(
@@ -15,8 +16,10 @@ export const linkRoute: FastifyPluginAsyncZod = async (app) => {
         }),
         response: {
           201: z.object({
-            originalLink: z.url(),
+            uploadId: z.string(),
+            originalLink: z.string(),
             shortLink: z.string(),
+            accessNumber: z.number(),
           }),
           400: z.object({
             message: z.string(),
@@ -27,16 +30,12 @@ export const linkRoute: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const { originalLink, shortLink } = request.body;
 
-      const uploadedLink = await uploadLinks({
+      const { code, data } = await uploadLinks({
         originalLink,
         shortLink,
       });
 
-      if (!uploadedLink) {
-        return reply.status(400).send({ message: "Invalid link" });
-      }
-
-      return reply.status(201).send({ originalLink, shortLink });
+      return reply.status(code).send(data);
     },
   );
 
@@ -48,8 +47,10 @@ export const linkRoute: FastifyPluginAsyncZod = async (app) => {
         response: {
           200: z.array(
             z.object({
+              uploadId: z.string(),
               originalLink: z.string(),
               shortLink: z.string(),
+              accessNumber: z.number(),
             }),
           ),
           400: z.object({
@@ -62,10 +63,42 @@ export const linkRoute: FastifyPluginAsyncZod = async (app) => {
       const link = await listLinks();
 
       if (!link) {
-        return reply.status(400).send({ message: "Link não encontrado" });
+        return reply.status(400).send({ message: "Error listing items" });
       }
 
       return reply.status(200).send(link);
+    },
+  );
+
+  app.delete(
+    "/:id",
+    {
+      schema: {
+        summary: "Delete a link",
+        params: z.object({
+          id: z.string(),
+        }),
+        response: {
+          200: z.object({
+            message: z.string(),
+          }),
+          400: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+    },
+    async (request, reply) => {
+      const { id } = request.params;
+      const deleted = await deleteLinks({ id });
+
+      if (!deleted) {
+        return reply
+          .status(400)
+          .send({ message: "Error. This link was not deleted" });
+      }
+
+      return reply.status(200).send({ message: "Link successfully deleted" });
     },
   );
 };

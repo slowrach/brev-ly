@@ -13,6 +13,7 @@ server.setSerializerCompiler(serializerCompiler)
 
 server.register(fastifyCors, {
   origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 })
 
 server.register(fastifyMultipart)
