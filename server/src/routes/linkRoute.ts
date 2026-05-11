@@ -3,6 +3,8 @@ import { z } from "zod";
 import { uploadLinks } from "../funcs/uploadLinks";
 import { listLinks } from "../funcs/listLinks";
 import { deleteLinks } from "../funcs/deleteLinks";
+import { changeAccessNumber } from "../funcs/changeAccessNumber"
+import fs from "node:fs";
 
 export const linkRoute: FastifyPluginAsyncZod = async (app) => {
   app.post(
@@ -70,6 +72,27 @@ export const linkRoute: FastifyPluginAsyncZod = async (app) => {
     },
   );
 
+  app.get("/export", async (request, reply) => {
+    const link = await listLinks();
+
+    let csv = "originalLink,shortLink,accessNumber\n";
+
+    link.forEach(
+      (item, index) =>
+        (csv += `${item.originalLink},${item.shortLink},${item.accessNumber}${index + 1 === link.length ? "" : "\n"}`),
+    );
+
+    console.log(csv);
+
+    // Content-Type: text/csv
+
+    return reply
+      .status(200)
+      .type("text/csv")
+      .header("Content-Disposition", 'attachment; filename="simple.csv"')
+      .send(csv);
+  });
+
   app.delete(
     "/:id",
     {
@@ -101,4 +124,42 @@ export const linkRoute: FastifyPluginAsyncZod = async (app) => {
       return reply.status(200).send({ message: "Link successfully deleted" });
     },
   );
+
+  app.patch(
+    "/:id",
+    {
+      schema: {
+        summary: "Change access number",
+        params: z.object({
+          id: z.string(),
+        }),
+        body: z.object({
+          accessNumber: z.number(),
+        }),
+        response: {
+          200: z.object({
+            message: z.string(),
+          }),
+          400: z.object({
+            message: z.string(),
+          }),
+        },
+      }
+    },
+    async (request, reply) => {
+      const { id } = request.params;
+      const { accessNumber } = request.body;
+
+      const changeNumber = await changeAccessNumber({ id, accessNumber });
+
+      if (!changeNumber) {
+        return reply
+          .status(400)
+          .send({ message: "Error. This link was not updated" });
+      }
+
+      return reply.status(200).send({ message: "Access number successfully updated" });
+    }, 
+  )
 };
+

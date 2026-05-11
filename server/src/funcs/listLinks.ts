@@ -9,6 +9,7 @@ export async function listLinks() {
       originalLink: schema.uploads.originalLink,
       shortLink: schema.uploads.shortLink,
       accessNumber: schema.uploads.accessNumber,
+      createdAt: schema.uploads.createdAt,
     })
     .from(schema.uploads);
 

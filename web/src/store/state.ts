@@ -21,9 +21,12 @@ interface StateProps {
 export const useStates = create<StateProps>((set) => ({
   loading: false,
   setLoading: (loading) => set({ loading }),
+  
   saving: false,
   setSaving: (saving) => set({ saving }),
+
   uploads: [],
+
   setUploads: (uploads) => set({ uploads }),
   addUpload: (upload) =>
     set((state) => ({

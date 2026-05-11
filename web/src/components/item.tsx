@@ -30,12 +30,20 @@ export function Item({
     }
   }
 
+  async function changeNumber() {
+    try {
+      await api.patch(`/${uploadId}`, {accessNumber: accessNumber + 1})
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className="flex items-center justify-between w-full gap-3 py-3 border-t border-t-gray-200">
       <div className="flex flex-col gap-1 w-39">
         <a
-          href={`http://192.168.1.7:5173/${shortLink}`}
-          target="_blank"
+          href={`/${shortLink}`}
+          onClick={() => changeNumber()}
           className="text-theme-blue font-medium text-sm truncate lg:overflow-visible hover:underline"
         >
           {`brev.ly/${shortLink}`}

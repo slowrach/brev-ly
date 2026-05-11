@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { motion } from "motion/react";
 import { useStates } from "../store/state";
+import { api } from "../http/api";
 
 export function MyLinks() {
   const { saving, loading, uploads } = useStates();
@@ -26,7 +27,16 @@ export function MyLinks() {
       )}
       <div className="flex justify-between mb-4 items-center">
         <h2 className="text-black text-xl font-bold">Meus links</h2>
-        <Button variant="gray" disabled={false} className="h-8 w-26">
+        <Button
+          variant="gray"
+          disabled={false}
+          className="h-8 w-26"
+          onClick={async () => {
+            const response = await api.get("/export");
+
+            console.log(response.data);
+          }}
+        >
           <img src={download} alt="ícone de download" className="w-4 h-4" />
           <span className="text-xs font-bold">Baixar CSV</span>
           <span className="sr-only">Download CSV</span>
