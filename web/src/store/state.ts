@@ -8,6 +8,9 @@ export type Upload = {
 };
 
 interface StateProps {
+  loadingCsv: boolean;
+  setLoadingCsv: (loadingCsv: boolean) => void;
+
   loading: boolean;
   setLoading: (loading: boolean) => void;
   saving: boolean;
@@ -19,6 +22,9 @@ interface StateProps {
 }
 
 export const useStates = create<StateProps>((set) => ({
+  loadingCsv: false,
+  setLoadingCsv: (loadingCsv) => set({ loadingCsv }),
+
   loading: false,
   setLoading: (loading) => set({ loading }),
   

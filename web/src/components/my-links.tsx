@@ -1,6 +1,6 @@
 import download from "../assets/download.svg";
 import link from "../assets/link.svg";
-import charging from "../assets/charging.svg";
+import { Charging } from "./ui/charging";
 import { Item } from "./item";
 import { Button } from "./ui/button";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
@@ -9,7 +9,7 @@ import { useStates } from "../store/state";
 import { api } from "../http/api";
 
 export function MyLinks() {
-  const { saving, loading, uploads } = useStates();
+  const { saving, loading, loadingCsv, setLoadingCsv, uploads } = useStates();
   const isEmpty = uploads.length === 0;
 
   return (
@@ -29,31 +29,27 @@ export function MyLinks() {
         <h2 className="text-black text-xl font-bold">Meus links</h2>
         <Button
           variant="gray"
-          disabled={false}
+          disabled={loadingCsv ? true : false}
           className="h-8 w-26"
           onClick={async () => {
+            setLoadingCsv(true);
             const response = await api.get("/export");
-
-            console.log(response.data);
+            setLoadingCsv(false);
+            window.location.replace(response.data.url);
           }}
         >
-          <img src={download} alt="ícone de download" className="w-4 h-4" />
+          {loadingCsv ? (
+            <Charging className="w-4 h-4" />
+          ) : (
+            <img src={download} alt="ícone de download" className="w-4 h-4" />
+          )}
           <span className="text-xs font-bold">Baixar CSV</span>
           <span className="sr-only">Download CSV</span>
         </Button>
       </div>
       {loading ? (
         <div className="flex flex-col justify-center items-center p-8 gap-2 border-t border-t-gray-300">
-          <motion.div
-            animate={{ rotate: "360deg" }}
-            transition={{
-              duration: 1,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          >
-            <img src={charging} alt="ícone de carregamento" />
-          </motion.div>
+          <Charging />
           <span className="text-gray-500 uppercase text-xs">
             carregando links...
           </span>

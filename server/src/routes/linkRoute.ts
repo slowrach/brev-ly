@@ -3,8 +3,10 @@ import { z } from "zod";
 import { uploadLinks } from "../funcs/uploadLinks";
 import { listLinks } from "../funcs/listLinks";
 import { deleteLinks } from "../funcs/deleteLinks";
-import { changeAccessNumber } from "../funcs/changeAccessNumber"
+import { changeAccessNumber } from "../funcs/changeAccessNumber";
+import { R2StorageProvider } from "../storage/providers/r2-storage";
 import fs from "node:fs";
+import { exportLinks } from "../funcs/exportLinks";
 
 export const linkRoute: FastifyPluginAsyncZod = async (app) => {
   app.post(
@@ -72,26 +74,32 @@ export const linkRoute: FastifyPluginAsyncZod = async (app) => {
     },
   );
 
-  app.get("/export", async (request, reply) => {
-    const link = await listLinks();
+  app.get(
+    "/export",
+    {
+      schema: {
+        summary: "Export links as CSV",
+        response: {
+          200: z.object({
+            url: z.string(),
+          }),
+          400: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+    },
+    async (request, reply) => {
+      const storageProvider = new R2StorageProvider();
+      const result = await exportLinks(storageProvider);
 
-    let csv = "originalLink,shortLink,accessNumber\n";
+      if (!result) {
+        return reply.status(400).send({ message: "No links found to export" });
+      }
 
-    link.forEach(
-      (item, index) =>
-        (csv += `${item.originalLink},${item.shortLink},${item.accessNumber}${index + 1 === link.length ? "" : "\n"}`),
-    );
-
-    console.log(csv);
-
-    // Content-Type: text/csv
-
-    return reply
-      .status(200)
-      .type("text/csv")
-      .header("Content-Disposition", 'attachment; filename="simple.csv"')
-      .send(csv);
-  });
+      return reply.status(200).send({ url: result.url });
+    },
+  );
 
   app.delete(
     "/:id",
@@ -144,7 +152,7 @@ export const linkRoute: FastifyPluginAsyncZod = async (app) => {
             message: z.string(),
           }),
         },
-      }
+      },
     },
     async (request, reply) => {
       const { id } = request.params;
@@ -158,8 +166,9 @@ export const linkRoute: FastifyPluginAsyncZod = async (app) => {
           .send({ message: "Error. This link was not updated" });
       }
 
-      return reply.status(200).send({ message: "Access number successfully updated" });
-    }, 
-  )
+      return reply
+        .status(200)
+        .send({ message: "Access number successfully updated" });
+    },
+  );
 };
-
