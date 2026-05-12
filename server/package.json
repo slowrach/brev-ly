@@ -8,7 +8,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "dev": "tsx watch --env-file .env src/server.ts",
-    "build": "tsup --format esm"
+    "build": "tsup src/server.ts --format esm"
   },
   "keywords": [],
   "author": "",
@@ -34,13 +34,5 @@
     "drizzle-kit": "^0.31.10",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
-  },
-  "tsup": {
-    "entry": [
-      "src/server.ts"
-    ],
-    "splitting": false,
-    "sourcemap": true,
-    "clean": true
   }
 }
