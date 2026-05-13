@@ -2,8 +2,6 @@ import { fastify } from "fastify";
 import { fastifyCors } from "@fastify/cors";
 import { fastifyMultipart } from "@fastify/multipart";
 import { linkRoute } from "./routes/linkRoute";
-import fastifySwagger from "@fastify/swagger";
-import { fastifySwaggerUi } from "@fastify/swagger-ui";
 import {
   validatorCompiler,
   serializerCompiler,
@@ -21,19 +19,6 @@ server.register(fastifyCors, {
 });
 
 server.register(fastifyMultipart);
-server.register(fastifySwagger, {
-  openapi: {
-    info: {
-      title: "Upload Links Server",
-      version: "1.0.0",
-    },
-  },
-  transform: jsonSchemaTransform,
-});
-
-server.register(fastifySwaggerUi, {
-  routePrefix: "/docs",
-});
 
 server.register(linkRoute);
 
